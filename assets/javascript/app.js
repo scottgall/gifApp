@@ -1,11 +1,13 @@
 $(function() {
 
-var gifArr = ["Kanye West", "Jay Z", "J. Cole", "Drake"];
+var gifArr = ["Kanye West", "Jay-Z", "J. Cole", "Drake"];
 var offset = 0;
 var current = "";
 
 
 function displayGif(search) {
+
+    $("#addMore").remove();
 
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
     search + "&api_key=dc6zaTOxFJmzC&limit=10&offset=" + offset;
@@ -20,34 +22,43 @@ function displayGif(search) {
 
         for (var i = 0; i < results.length; i++) {
             
-            var gifDiv = $("<div class='item'>");
+            var gifDiv = $("<div>");
             gifDiv.attr("id", "img" + (offset + i));
-
-            var rating = results[i].rating;
-
-            var p = $("<p>").text("Rating: " + rating);
+            gifDiv.addClass("d-inline-block gifDiv");
 
             var image = $("<img>");
             image.attr("src", results[i].images.fixed_height_still.url);
             image.attr("still", results[i].images.fixed_height_still.url);
             image.attr("animate", results[i].images.fixed_height.url);
             image.attr("state", "still");
-            image.addClass("img");
+            image.addClass("img img-fluid");
 
-            var favButton = $("<button>").text("fav");
-            favButton.addClass("fav");
-            favButton.val(offset + i);
+            var rating = results[i].rating;
 
-            gifDiv.prepend(p);
-            gifDiv.prepend(image);
-            gifDiv.prepend(favButton);
+            var row = $("<div>").addClass("row justify-content-between gifRow");
+            var rate = $("<div>").text("Rating: " + rating);
+            var fav = $("<button>").html("<i class='material-icons'>favorite</i>");
+            fav.addClass("fav").val(offset + i);
+            row.append(rate);
+            row.append(fav);
+            // var p = $("<div>").html("Rating: " + rating);
+            // p.addClass("d-inline-flex");
+
+            // var favButton = $("<button>").text("fav");
+            // favButton.addClass("fav");
+            // favButton.val(offset + i);
+
+            gifDiv.append(image);
+            // gifDiv.append(p);
+            // gifDiv.append(favButton);
+            gifDiv.append(row);
 
             $("#gifSection").prepend(gifDiv);
 
             offset += 10;
         }
-        
-    
+        $(".header1").empty();
+        $(".header1").append($("<button>").text("add more").attr("id", "addMore"));
     });
 } 
 
@@ -69,48 +80,32 @@ $(document.body).on("click", ".img", function() {
 
 $(document.body).on("click", ".fav", function() {
     var i = $(this).val();
-    $("#img" + i).clone().appendTo("#favSection");
+    $("#img" + i).clone().appendTo("#favSection").children('img').addClass('img-fluid');
 });
     
-// Function for displaying movie data
 function renderButtons() {
 
-    // Deletes the movies prior to adding new movies
-    // (this is necessary otherwise you will have repeat buttons)
     $("#buttonSection").empty();
 
-    // Loops through the array of movies
     for (var i = 0; i < gifArr.length; i++) {
-
-        // Then dynamicaly generates buttons for each movie in the array
-        // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
         var a = $("<button>");
-        // Adds a class of movie to our button
         a.addClass("gif");
-        // Added a data-attribute
         a.attr("data", gifArr[i]);
-        // Provided the initial button text
         a.text(gifArr[i]);
-        // Added the button to the buttons-view div
         $("#buttonSection").append(a);
     }
 }
 
-// This function handles events where the add movie button is clicked
 $("#add-button").on("click", function(event) {
     event.preventDefault();
-    // This line of code will grab the input from the textbox
     var button = $("#button-input").val().trim();
     $("#button-input").val('');
-
-    // The movie from the textbox is then added to our array
-    gifArr.push(button);
-
-    // Calling renderButtons which handles the processing of our movie array
-    renderButtons();
+    if (button != '') {
+        gifArr.push(button);
+        renderButtons();
+    }
 });
 
-// Adding click event listeners to all elements with a class of "movie"
 $(document).on("click", ".gif", function() {
     $("#gifSection").empty();
     offset = 0;
@@ -118,11 +113,10 @@ $(document).on("click", ".gif", function() {
     current = $(this).attr("data");
 });
 
-$("#addMore").on("click", function() {
+$(document).on("click", "#addMore", function() {
     displayGif(current);
 });
 
-// Calling the renderButtons function to display the intial buttons
 renderButtons();
 
 });
