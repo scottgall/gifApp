@@ -41,16 +41,8 @@ function displayGif(search) {
             fav.addClass("fav").val(offset + i);
             row.append(rate);
             row.append(fav);
-            // var p = $("<div>").html("Rating: " + rating);
-            // p.addClass("d-inline-flex");
-
-            // var favButton = $("<button>").text("fav");
-            // favButton.addClass("fav");
-            // favButton.val(offset + i);
 
             gifDiv.append(image);
-            // gifDiv.append(p);
-            // gifDiv.append(favButton);
             gifDiv.append(row);
 
             $("#gifSection").prepend(gifDiv);
