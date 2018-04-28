@@ -54,6 +54,7 @@ button, #add-button {
 }
 .card-header {
     background-color: lightgrey;
+    height: 51.5px;
 }
 .arrow {
     position: relative;
